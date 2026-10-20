@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="퀘스트 RPG">
+<meta name="theme-color" content="#1a59f2">
+<meta name="format-detection" content="telephone=no">
+<title>일일 퀘스트 RPG</title>
+<style>
+:root{--blue:#1a59f2;--deep:#0d2690;--yellow:#ffd126;--card:#fffffff2;--ink:#0d2690;--bg1:#1a59f2;--bg2:#0d2690;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#1b2a63f2;--ink:#fff;--bg1:#0f2f8f;--bg2:#050c2e}}
+:root[data-theme="dark"]{--card:#1b2a63f2;--ink:#fff;--bg1:#0f2f8f;--bg2:#050c2e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+html{background:var(--bg2);-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:linear-gradient(var(--bg1),var(--bg2));color:#fff;min-height:100vh;min-height:100dvh;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior-y:none}
+main{max-width:480px;margin:0 auto;padding:14px 14px 40px}
+.top{display:flex;align-items:center;gap:12px}
+.av{font-size:44px;width:70px;height:70px;border-radius:50%;background:var(--yellow);border:4px solid #fff;display:grid;place-items:center;animation:bob 1.2s ease-in-out infinite alternate}
+@keyframes bob{to{transform:scale(1.08)}}
+.top h1{font-size:20px;margin:0}.top p{margin:2px 0 0;font-size:13px;opacity:.85}
+.tk{margin-left:auto;background:#fff3;border:0;color:#fff;border-radius:14px;padding:8px 10px;font-weight:800;font-size:13px;text-align:center}
+.xp{background:#fff2;border-radius:20px;padding:14px;margin:14px 0}
+.xph{display:flex;justify-content:space-between;font-weight:800}
+.bar{position:relative;height:26px;background:#0004;border-radius:99px;margin-top:20px;overflow:visible}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--yellow),orange);transition:width .6s cubic-bezier(.3,1.6,.5,1);position:relative;overflow:hidden}
+.fill::after{content:"";position:absolute;top:0;bottom:0;width:40px;background:#fff7;animation:sh 2s linear infinite}
+@keyframes sh{from{left:-40px}to{left:100%}}
+.mark{position:absolute;left:80%;top:0;bottom:0;width:2px;background:#fffc}
+.mark span{position:absolute;top:-20px;left:-8px;font-size:13px}
+.card{background:var(--card);color:var(--ink);border-radius:22px;padding:16px;margin-bottom:12px;border:4px solid transparent}
+.card.max{border-color:var(--yellow)}
+.row{display:flex;justify-content:space-between;align-items:center;font-weight:800}
+.row small{color:var(--blue);font-size:14px}
+.ctr{display:flex;justify-content:center;align-items:center;gap:14px;margin:10px 0}
+.ctr b{font-size:34px;min-width:90px;text-align:center}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation;transition:transform .12s;-webkit-appearance:none;appearance:none}
+.hint{text-align:center;font-size:13px;opacity:.75;margin:16px 0 0;line-height:1.5}
+button:active{transform:scale(.93)}
+.rb{width:56px;height:56px;border-radius:50%;border:0;background:var(--blue);color:#fff;font-size:28px;font-weight:900}
+input[type=range]{width:100%;accent-color:var(--yellow);height:30px}
+.tg{display:flex;width:100%;align-items:center;gap:14px;text-align:left;border:0;color:var(--ink);background:var(--card);border-radius:22px;padding:16px;min-height:76px;margin-bottom:12px;font-size:18px;font-weight:800}
+.tg.on{background:var(--yellow);color:#0d2690}
+.tg .e{font-size:34px}.tg small{display:block;color:var(--blue);font-size:14px}.tg.on small{color:#0d2690}
+.tg .ck{margin-left:auto;font-size:36px;opacity:.4}.tg.on .ck{opacity:1}
+.go{width:100%;min-height:64px;border:0;border-radius:20px;background:var(--yellow);color:#0d2690;font-size:19px;font-weight:900;box-shadow:0 5px 0 #0005;margin-top:6px}
+.ov{position:fixed;inset:0;background:#050c2ef2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;text-align:center;z-index:5}
+.ov.show{display:flex}
+.big{font-size:100px;animation:pop .6s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{from{transform:scale(.1) rotate(-180deg)}}
+.ov h2{margin:0;color:var(--yellow);font-size:27px}
+.btn{border:0;border-radius:18px;background:var(--yellow);color:#0d2690;font-weight:900;font-size:19px;padding:15px 26px;width:100%;max-width:340px}
+.link{background:none;border:0;color:#fffb;font-size:15px}
+.chests{display:flex;gap:12px;width:100%;max-width:400px}
+.chest{flex:1;min-height:110px;font-size:62px;border:0;border-radius:20px;background:#fff2}
+.chest.open{background:#fff5;animation:shk .1s 8 alternate}
+.chest.dim{opacity:.3}
+@keyframes shk{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+.seg{display:flex;gap:8px}.seg button{border:0;border-radius:99px;padding:10px 16px;background:#fff3;color:#fff;font-weight:800}.seg button.sel{background:var(--yellow);color:#0d2690}
+.cf{position:fixed;top:-40px;pointer-events:none;z-index:9;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#000c;padding:12px 18px;border-radius:99px;font-weight:700;font-size:15px;display:none;z-index:8;max-width:90%;text-align:center}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div class="av">🦸‍♂️</div><div><h1>만능 히어로</h1><p>오늘의 퀘스트에 도전!</p></div>
+ <button class="tk" id="tk">🎟️ <span id="n">0</span> · 👑 <span id="g">0</span></button></div>
+ <div class="xp"><div class="xph"><span>⚡ 오늘의 XP</span><span id="xt">0 / 100 (0%)</span></div>
+ <div class="bar"><div class="fill" id="fill"></div><div class="mark"><span>🎟️</span></div></div></div>
+
+ <div class="card" id="c-am"><div class="row"><span>🌅 피리 오전 연습</span><small id="x-am"></small></div>
+ <div class="ctr"><button class="rb" data-k="am" data-d="-1">−</button><b id="v-am">0회</b><button class="rb" data-k="am" data-d="1">+</button></div>
+ <input type="range" min="0" max="15" step="1" value="0" id="r-am"></div>
+ <div class="card" id="c-pm"><div class="row"><span>🌇 피리 오후 연습</span><small id="x-pm"></small></div>
+ <div class="ctr"><button class="rb" data-k="pm" data-d="-1">−</button><b id="v-pm">0회</b><button class="rb" data-k="pm" data-d="1">+</button></div>
+ <input type="range" min="0" max="15" step="1" value="0" id="r-pm"></div>
+
+ <button class="tg" data-t="eng"><span class="e">📘</span><span>영어 퀘스트<small>+20 XP</small></span><span class="ck">✅</span></button>
+ <button class="tg" data-t="math"><span class="e">📐</span><span>수학 퀘스트<small>+20 XP</small></span><span class="ck">✅</span></button>
+ <button class="tg" data-t="ex"><span class="e">💪</span><span>운동 퀘스트<small>+5 XP</small></span><span class="ck">✅</span></button>
+ <button class="go" id="settle">⚔️ 퀘스트 완료 / 경험치 정산하기</button>
+ <p class="hint">📲 사파리 공유 버튼 → ‘홈 화면에 추가’를 누르면<br>앱처럼 전체 화면으로 실행돼요</p>
+</main>
+
+<div class="ov" id="rw"><div class="big" id="rwe"></div><h2 id="rwt"></h2><p id="rws"></p>
+ <button class="btn" id="rwd">지금 뽑으러 가기 🎁</button><button class="link" id="rwc">나중에</button></div>
+
+<div class="ov" id="dr"><h2>🎁 보상 뽑기</h2>
+ <div class="seg"><button id="sn" class="sel"></button><button id="sg"></button></div>
+ <div class="chests" id="ch"></div>
+ <div id="pz" style="min-height:140px"></div>
+ <button class="link" id="drc">닫기 ✕</button></div>
+<div id="toast"></div>
+
+<script>
+const KEY='dailyQuest.v1',MAX=15;
+const NORMAL=[["💨","꽝! 다음 기회에",30],["🎮","게임시간 15분",35],["🍪","간식권 1장",25],["🎮","게임시간 30분",10]];
+const GOLD=[["🎮","게임시간 30분",35],["🍕","특별 간식권",30],["🎬","영화 보기권",20],["👑","소원 들어주기권",15]];
+const $=id=>document.getElementById(id);
+const dk=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const blank=()=>({date:dk(),am:0,pm:0,eng:0,math:0,ex:0,tier:0});
+let S={q:blank(),n:0,g:0};
+try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.q)S=o}}catch(e){}
+if(S.q.date!==dk())S.q=blank();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const xpAM=()=>Math.min(S.q.am,MAX)/MAX*25, xpPM=()=>Math.min(S.q.pm,MAX)/MAX*30;
+const total=()=>Math.round(xpAM()+xpPM()+(S.q.eng?20:0)+(S.q.math?20:0)+(S.q.ex?5:0));
+
+let ac;
+function beep(f=660,d=.12,t='square'){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state!=='running')ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=.06;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+const hl=document.createElement('label');hl.style.cssText='position:fixed;left:-99px;top:-99px;opacity:0;pointer-events:none';const hi=document.createElement('input');hi.type='checkbox';hi.setAttribute('switch','');hl.appendChild(hi);document.body.appendChild(hl);
+const buzz=()=>{try{hl.click()}catch(e){}};
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.18,'triangle'),i*110));
+function confetti(em){for(let i=0;i<30;i++){const s=document.createElement('span');s.className='cf';s.textContent=em[i%em.length];
+ s.style.left=Math.random()*100+'vw';s.style.fontSize=18+Math.random()*20+'px';s.style.animationDuration=2+Math.random()*2+'s';s.style.animationDelay=Math.random()*.8+'s';
+ document.body.appendChild(s);setTimeout(()=>s.remove(),5200)}}
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2400)}
+
+let lastXP=-1;
+function render(){
+ for(const k of['am','pm']){$('v-'+k).textContent=S.q[k]+'회';$('r-'+k).value=S.q[k];
+  $('x-'+k).textContent=(k==='am'?xpAM():xpPM()).toFixed(1)+' / '+(k==='am'?25:30)+' XP';$('c-'+k).classList.toggle('max',S.q[k]>=MAX)}
+ document.querySelectorAll('.tg').forEach(b=>b.classList.toggle('on',!!S.q[b.dataset.t]));
+ const x=total();$('fill').style.width=Math.min(x,100)+'%';$('xt').textContent=x+' / 100 ('+Math.min(x,100)+'%)';
+ $('n').textContent=S.n;$('g').textContent=S.g;$('sn').textContent='🎟️ 일반 '+S.n+'장';$('sg').textContent='👑 황금 '+S.g+'장';
+ if(lastXP>=0&&x>lastXP){buzz(15);if(x>=100&&lastXP<100){fanfare();confetti(['🔥','⭐','✨'])}}
+ lastXP=x;save();
+}
+document.querySelectorAll('.rb').forEach(b=>b.onclick=()=>{const k=b.dataset.k,v=S.q[k]+ +b.dataset.d;if(v<0||v>MAX){buzz([20,40,20]);return}S.q[k]=v;beep(400+v*40,.08);buzz(12);render()});
+['am','pm'].forEach(k=>$('r-'+k).oninput=e=>{S.q[k]=+e.target.value;beep(400+S.q[k]*40,.05);buzz(8);render()});
+document.querySelectorAll('.tg').forEach(b=>b.onclick=()=>{const t=b.dataset.t;S.q[t]=S.q[t]?0:1;if(S.q[t]){beep(880,.15);buzz([20,30,20])}else buzz(8);render()});
+
+function settle(){
+ const x=total(),tier=x>=100?2:x>=80?1:0;buzz(40);
+ if(!tier){toast('80 XP부터 뽑기권을 받을 수 있어! 조금만 더 💪');return}
+ if(tier<=S.q.tier){toast('오늘 이 등급 보상은 이미 받았어! 더 높은 등급에 도전해 봐 🔥');return}
+ if(tier===2)S.g++;else S.n++;S.q.tier=tier;render();fanfare();buzz([60,40,60,40,120]);
+ $('rwe').textContent=tier===2?'🔥':'🎰';$('rwe').style.animation='none';void $('rwe').offsetWidth;$('rwe').style.animation='';
+ $('rwt').textContent=tier===2?'[황금 뽑기권 1장] 획득!':'[일반 뽑기권 1장] 획득!';
+ $('rws').textContent=tier===2?'완벽 클리어! 전설의 히어로 👑':'대단해! 퀘스트 클리어!';
+ $('rw').classList.add('show');confetti(tier===2?['🔥','⭐','👑','✨']:['🎰','⭐','✨']);
+}
+$('settle').onclick=settle;$('rwc').onclick=()=>$('rw').classList.remove('show');
+$('rwd').onclick=()=>{$('rw').classList.remove('show');openDraw(S.g>0&&S.q.tier===2)};
+
+let gold=false,opened=false;
+function drawUI(){$('sn').classList.toggle('sel',!gold);$('sg').classList.toggle('sel',gold);$('pz').innerHTML='';opened=false;
+ $('ch').innerHTML='';for(let i=0;i<3;i++){const b=document.createElement('button');b.className='chest';b.textContent=gold?'🏆':'🎁';b.onclick=()=>pick(b);$('ch').appendChild(b)}
+ const t=gold?S.g:S.n;$('pz').innerHTML='<p style="font-weight:800">'+(t>0?'상자를 터치해 봐! 👆':'뽑기권이 없어요. 퀘스트를 클리어하자! 💪')+'</p>'}
+function openDraw(g){gold=!!g;$('dr').classList.add('show');drawUI()}
+function pick(b){
+ const t=gold?S.g:S.n;if(opened||t<1){buzz([20,40,20]);return}
+ opened=true;gold?S.g--:S.n--;render();b.classList.add('open');
+ document.querySelectorAll('.chest').forEach(c=>{if(c!==b)c.classList.add('dim')});
+ let i=0;const iv=setInterval(()=>{beep(300+i*60,.08);buzz(15);if(++i>=6)clearInterval(iv)},120);
+ setTimeout(()=>{const pool=gold?GOLD:NORMAL;let r=Math.random()*pool.reduce((a,p)=>a+p[2],0),p=pool[0];for(const q of pool){if(r<q[2]){p=q;break}r-=q[2]}
+  b.classList.remove('open');b.textContent='✨';const lose=p[1].includes('꽝'),left=gold?S.g:S.n;
+  $('pz').innerHTML='<div class="big">'+p[0]+'</div><h2 style="color:#fff;margin:6px 0">'+p[1]+'</h2><button class="btn" id="again" '+(left?'':'disabled style="opacity:.4"')+'>한 번 더 뽑기 ('+left+'장 남음)</button>';
+  $('again').onclick=drawUI;
+  if(lose){beep(200,.3,'sawtooth');buzz(80)}else{fanfare();buzz([50,30,50,30,100]);confetti(['✨','⭐','🎉'])}},900);
+}
+$('sn').onclick=()=>{gold=false;drawUI()};$('sg').onclick=()=>{gold=true;drawUI()};
+$('tk').onclick=()=>openDraw(S.g>0&&S.n===0);$('drc').onclick=()=>$('dr').classList.remove('show');
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.q.date!==dk()){S.q=blank();render()}});
+try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#1a59f2';x.fillRect(0,0,180,180);x.font='110px serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🦸',90,98);const l=document.createElement('link');l.rel='apple-touch-icon';l.href=c.toDataURL('image/png');document.head.appendChild(l)}catch(e){}
+if(navigator.standalone)document.querySelector('.hint').style.display='none';
+render();
+</script>
+</body>
+</html>
